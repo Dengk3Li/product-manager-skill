@@ -24,6 +24,7 @@ class PackageTest(unittest.TestCase):
             SKILL_DIR / "references" / "component-versioning.md",
             SKILL_DIR / "references" / "product-sources.md",
             ROOT / "README.md",
+            ROOT / "README.zh-CN.md",
         ]
         for path in expected:
             self.assertTrue(path.is_file(), str(path))

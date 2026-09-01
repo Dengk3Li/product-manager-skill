@@ -1,6 +1,6 @@
 {
   "name": "product-manager",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Turn ambiguous product requests into a clear decision, a bounded scope, and the smallest useful planning artifact.",
   "author": {
     "name": "Dengk3Li",
