@@ -1,8 +1,7 @@
 interface:
   display_name: "Product Manager"
-  short_description: "Clarify product decisions without turning every request into a PRD."
-  default_prompt: "Use $product-manager to identify the product decision, choose the lightest planning mode, and define the smallest scope that can be accepted."
+  short_description: "Connect business logic, requirements, delivery, and product feedback"
+  default_prompt: "Use $product-manager to connect customer evidence and business goals to a scoped, traceable product decision."
 
 policy:
   allow_implicit_invocation: true
-

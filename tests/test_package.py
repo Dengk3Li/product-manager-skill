@@ -5,6 +5,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SKILL_DIR = ROOT / "skills" / "product-manager"
+EXPECTED_SKILLS = {"product-manager", "product-roadmap", "product-requirements"}
 
 
 class PackageTest(unittest.TestCase):
@@ -13,16 +14,23 @@ class PackageTest(unittest.TestCase):
         self.assertEqual(manifest["name"], "product-manager")
         self.assertEqual(manifest["skills"], "./skills/")
 
-    def test_skill_has_matching_name(self):
-        skill = (SKILL_DIR / "SKILL.md").read_text()
-        self.assertTrue(skill.startswith("---\nname: product-manager\n"))
-        self.assertIn("## Select the lightest mode", skill)
+    def test_package_exposes_all_product_capabilities(self):
+        discovered = set()
+        for path in (ROOT / "skills").glob("*/SKILL.md"):
+            name_line = path.read_text().splitlines()[1]
+            discovered.add(name_line.removeprefix("name: "))
+        self.assertEqual(discovered, EXPECTED_SKILLS)
 
     def test_expected_public_files_exist(self):
         expected = [
             SKILL_DIR / "agents" / "openai.yaml",
-            SKILL_DIR / "references" / "component-versioning.md",
             SKILL_DIR / "references" / "product-sources.md",
+            ROOT / "skills/product-roadmap/agents/openai.yaml",
+            ROOT / "skills/product-roadmap/references/roadmap-method.md",
+            ROOT / "skills/product-requirements/agents/openai.yaml",
+            ROOT / "skills/product-requirements/references/requirements-model.md",
+            ROOT / "skills/product-requirements/assets/requirements-traceability.template.json",
+            ROOT / "skills/product-requirements/scripts/check_requirements_traceability.py",
             ROOT / "README.md",
             ROOT / "README.zh-CN.md",
         ]

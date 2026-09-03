@@ -1,10 +1,10 @@
-# Product Manager Skill
+# Product Manager Skill Suite
 
 English | [简体中文](README.zh-CN.md)
 
 [![CI](https://github.com/Dengk3Li/product-manager-skill/actions/workflows/ci.yml/badge.svg)](https://github.com/Dengk3Li/product-manager-skill/actions/workflows/ci.yml)
 
-An Agent Skill that turns ambiguous product requests into clear scope and acceptance without producing a PRD for every change.
+An Agent Skill suite that connects customer evidence and business goals to product decisions, hierarchical requirements, roadmaps, delivery coverage, and outcome feedback without taking over technical architecture.
 
 ## Quick start
 
@@ -12,6 +12,8 @@ Install with the open skills CLI:
 
 ```bash
 npx skills add Dengk3Li/product-manager-skill --skill product-manager
+npx skills add Dengk3Li/product-manager-skill --skill product-roadmap
+npx skills add Dengk3Li/product-manager-skill --skill product-requirements
 ```
 
 Then ask your agent:
@@ -20,32 +22,56 @@ Then ask your agent:
 Use $product-manager to decide whether this request needs a PRD.
 Use $product-manager to define the scope and acceptance for this release.
 Use $product-manager to split this roadmap only where outputs are independently valuable.
+Use $product-roadmap to create an evidence-based Now/Next/Later roadmap.
+Use $product-requirements to approve one requirement baseline, trace delivery automatically, and ask me only for material decisions.
 ```
 
-The skill chooses one of three planning modes, writes the smallest artifact that resolves the decision, and stops once implementation can proceed.
+The core skill owns product logic and routes detailed roadmap or requirement-traceability work to the matching companion skill.
+
+Audit a requirement model without stopping delivery on warnings:
+
+```bash
+python3 skills/product-requirements/scripts/check_requirements_traceability.py \
+  requirements-traceability.json --phase delivery
+```
 
 ## What it does
 
 Product Manager helps an agent:
 
+- connect customer evidence, commercial context, strategy, and product outcomes;
 - identify the user or business outcome behind a request;
+- compare opportunities and alternatives before committing to a solution;
 - separate required scope, optional scope, and explicit non-goals;
-- choose a planning depth that matches the actual coordination need;
-- define acceptance as observable results;
+- prioritize with explicit evidence, confidence, risk, and opportunity cost;
+- build stakeholder-readable roadmaps without inventing dates;
+- give requirements durable IDs, hierarchy, supporting relationships, and observable acceptance;
+- audit implementation coverage, blockers, verification, and human acceptance against approved requirements;
+- compare observed results with the hypothesis after release;
 - preserve `UNKNOWN` when authority, ownership, provenance, or release state is not verified;
 - hand architecture, implementation, and task administration to their owning roles.
 
 It is decision support, not a general-purpose project-management framework.
 
-## Why it exists
+## The problem this suite solves
 
-Product work with coding agents tends to fail in two opposite ways.
+Coding agents often start from a sentence that mixes a business goal, a proposed feature, and an implementation guess. The resulting code can be technically complete while solving the wrong problem. Later, nobody can reliably answer which original requirement a module satisfies or why a supporting requirement exists.
 
-A small, settled change can trigger a full PRD, a multi-level WBS, risk gates, task cards, and several review documents. The planning overhead becomes larger than the work.
+The usual correction creates a second problem: every item receives a status, gate, approval, and manual acceptance step. Humans spend time reviewing generated process records instead of making product decisions.
 
-A broad request can fail differently: the agent starts implementing before the outcome, release boundary, and non-goals are clear. Scope expands while product, architecture, and delivery decisions get mixed together.
+This suite keeps a durable chain from business outcome to requirement to implementation evidence. The human approves the product baseline once. Agents maintain hierarchy, mappings, delivery state, evidence, and blocker summaries. The workflow returns to a human only when scope, priority, risk, cost, user-visible behavior, or release acceptance needs judgment.
 
-This skill uses proportional planning. Structure is added only when it resolves a real product decision, coordinates independently valuable outputs, or controls a confirmed risk.
+Small settled work stays small. Multi-part work gains enough structure to remain traceable without becoming a parallel project-management system.
+
+## Human review budget
+
+| Moment | Human responsibility | Agent responsibility |
+|---|---|---|
+| Before consequential work | Approve one baseline and settle material open choices | Research facts, draft the hierarchy, connect supporting requirements, and surface only material decisions |
+| During delivery | Decide only on scope or product changes | Maintain module mappings, evidence, coverage, and blocker summaries |
+| At module or release acceptance | Judge the delivered outcome once | Verify required criteria from tests, runtime observations, and contracts |
+
+Enablers inherit the baseline and release decision unless they introduce a separate product consequence.
 
 ## Planning modes
 
@@ -53,7 +79,7 @@ This skill uses proportional planning. Structure is added only when it resolves 
 |---|---|---|
 | **Direct** | One clear result, one write set, no material product decision left open | Outcome, scope, acceptance, next action |
 | **Coordinated** | Two or more independently valuable outputs, multiple owners, or a real dependency | Compact brief, L1/L2 split, actual dependencies |
-| **Controlled** | Public release, data migration, security, privacy, authority changes, destructive action, or conflicting writers | Product decision plus the required controls, review, and rollback |
+| **Controlled** | Privacy, compliance, public-release, irreversible-cost, or user-trust consequences | Product authority, risk, release boundary, and acceptance evidence |
 
 Controlled work does not automatically need deeper decomposition. A single high-risk deliverable can remain one task.
 
@@ -82,23 +108,27 @@ The board and the import can be built and accepted separately. The skill selects
 Publish the dataset and migrate existing user records to the new schema.
 ```
 
-The skill selects **Controlled** because public release and persistent-data migration change the release boundary. It adds ownership, rollback, and review requirements while keeping the task split tied to actual deliverables.
+The skill selects **Controlled** because public release and persistent-data migration change the product commitment. It states the decision authority, user and business risk, release boundary, and evidence required before release, then routes technical controls to their owning workflows.
 
 ## How it works
 
-1. Read the existing product, code, task, and decision context.
-2. Find the unresolved question that can change the outcome, scope, acceptance, or release boundary.
-3. Ask only for information that changes that decision.
-4. Select Direct, Coordinated, or Controlled.
-5. Deliver the decision and exit product shaping.
+1. Read customer, product, business, roadmap, delivery, and decision evidence.
+2. Frame the target customer, problem, outcome, business value, constraints, and one reviewable baseline.
+3. Compare opportunities and alternatives, then identify the riskiest assumption.
+4. Recommend and shape the smallest useful release.
+5. Approve the baseline once and route architecture placement to the system architect.
+6. Let agents maintain requirement coverage, evidence, and blocker summaries during delivery.
+7. Verify required outcomes, request one module or release decision, and revisit the product hypothesis after release.
 
-The skill re-enters product work only when product intent or the release boundary changes materially.
+The requirements checker supports `report`, `align`, `delivery`, and `acceptance` phases. Structural contradictions always block. Delivery evidence gaps normally warn. Acceptance blocks only required outcomes that remain unverified or lack the release-level human decision.
 
 ## Role boundary
 
 | Role | Owns |
 |---|---|
 | Product manager | Problem, priority, scope, non-goals, release boundary, acceptance |
+| Product roadmap | Strategy-to-outcome sequencing, horizons, confidence, and roadmap feedback |
+| Product requirements | One approved baseline, requirement hierarchy, automatic delivery traceability, exception reporting, and release-level acceptance |
 | System architect | Module placement, presentation budget, file ownership, shared surfaces, interfaces |
 | Implementer | Code and tests inside the agreed boundary |
 | Task system | Authorized tracking, assignment, and cross-session handoff |
@@ -115,6 +145,7 @@ Use this skill for:
 - PRDs, roadmaps, prioritization, and release scope;
 - feature decomposition with independently valuable outcomes;
 - product decisions that affect risk or release controls;
+- pre-implementation requirement alignment and post-build coverage or blocker reviews;
 - plans that have accumulated tasks but still lack a clear decision.
 
 Do not invoke it again for:
@@ -122,7 +153,7 @@ Do not invoke it again for:
 - already-scoped implementation;
 - routine bug fixes;
 - document cleanup;
-- acceptance checks;
+- isolated acceptance checks that do not need the requirement baseline;
 - task-card maintenance;
 - branch or worktree lifecycle operations.
 
@@ -133,9 +164,19 @@ Do not invoke it again for:
 skills/product-manager/
   SKILL.md
   agents/openai.yaml
-  references/component-versioning.md
   references/product-sources.md
+skills/product-roadmap/
+  SKILL.md
+  agents/openai.yaml
+  references/roadmap-method.md
+skills/product-requirements/
+  SKILL.md
+  agents/openai.yaml
+  assets/requirements-traceability.template.json
+  references/requirements-model.md
+  scripts/check_requirements_traceability.py
 tests/test_package.py
+tests/test_requirements_traceability.py
 ```
 
 `SKILL.md` is the runtime instruction set. The repository README is written for people evaluating or installing the skill.
@@ -152,6 +193,9 @@ The skill adapts ideas from:
 - [Intercom: Keep it simple](https://www.intercom.com/blog/intercom-product-principles-keep-it-simple/)
 - [GOV.UK: Product manager](https://www.gov.uk/service-manual/the-team/product-manager)
 - [Atlassian: Product requirements template](https://www.atlassian.com/software/confluence/templates/product-requirements)
+- [Atlassian: Agile roadmaps](https://www.atlassian.com/agile/product-management/roadmaps)
+- [Atlassian: Product discovery](https://www.atlassian.com/agile/product-management/discovery)
+- [Product Talk: Discovering solutions](https://www.producttalk.org/discovering-solutions/)
 
 See [product-sources.md](skills/product-manager/references/product-sources.md) for the rule-by-rule adaptation notes.
 
@@ -167,6 +211,7 @@ Validate the skill and plugin manifests with the corresponding creator tools:
 
 ```bash
 python3 <skill-creator>/scripts/quick_validate.py skills/product-manager
+python3 <skill-creator>/scripts/quick_validate.py skills/product-requirements
 python3 <plugin-creator>/scripts/validate_plugin.py .
 ```
 

@@ -1,7 +1,7 @@
 {
   "name": "product-manager",
-  "version": "0.1.1",
-  "description": "Turn ambiguous product requests into a clear decision, a bounded scope, and the smallest useful planning artifact.",
+  "version": "0.2.0",
+  "description": "Connect product discovery, business logic, traceable requirements, roadmaps, delivery coverage, and outcome feedback without taking over architecture.",
   "author": {
     "name": "Dengk3Li",
     "url": "https://github.com/Dengk3Li"
@@ -17,19 +17,21 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Product Manager",
-    "shortDescription": "Clarify product decisions without turning every request into a PRD.",
-    "longDescription": "Choose the lightest planning mode that fits the work, define the outcome and release boundary, and stop shaping once implementation can proceed without another product decision.",
+    "shortDescription": "Connect discovery, business logic, roadmaps, and product feedback.",
+    "longDescription": "Shape customer and business outcomes, approve one lightweight requirement baseline, trace delivery automatically, and escalate only material product decisions while leaving technical architecture to its owning role.",
     "developerName": "Dengk3Li",
     "category": "Productivity",
     "capabilities": [
       "Product Shaping",
-      "Scope and Prioritization"
+      "Scope and Prioritization",
+      "Product Roadmaps",
+      "Requirements Traceability"
     ],
     "websiteURL": "https://github.com/Dengk3Li/product-manager-skill",
     "defaultPrompt": [
-      "Turn this request into the smallest useful product decision and scope.",
-      "Use $product-manager to decide whether this request needs a PRD.",
-      "Use $product-manager to separate this roadmap into independently valuable releases."
+      "Use $product-manager to connect this customer problem to a business outcome and product decision.",
+      "Use $product-roadmap to create an evidence-based Now/Next/Later roadmap.",
+      "Use $product-requirements to approve one requirement baseline, trace delivery automatically, and escalate only material exceptions."
     ]
   }
 }
