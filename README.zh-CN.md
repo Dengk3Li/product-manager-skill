@@ -1,10 +1,10 @@
-# Product Manager Skill
+# Product Manager Skill Suite
 
 [English](README.md) | 简体中文
 
 [![CI](https://github.com/Dengk3Li/product-manager-skill/actions/workflows/ci.yml/badge.svg)](https://github.com/Dengk3Li/product-manager-skill/actions/workflows/ci.yml)
 
-一个把模糊产品请求整理成明确范围和验收结果的 Agent Skill。它不会为每项改动都生成一份 PRD。
+一组把客户证据和业务目标连接到产品决定、分层需求、路线图、交付覆盖与结果反馈的 Agent Skill；技术架构仍由架构师负责。
 
 ## 快速开始
 
@@ -12,6 +12,9 @@
 
 ```bash
 npx skills add Dengk3Li/product-manager-skill --skill product-manager
+npx skills add Dengk3Li/product-manager-skill --skill product-grilling
+npx skills add Dengk3Li/product-manager-skill --skill product-roadmap
+npx skills add Dengk3Li/product-manager-skill --skill product-requirements
 ```
 
 安装后可以这样调用：
@@ -20,32 +23,58 @@ npx skills add Dengk3Li/product-manager-skill --skill product-manager
 Use $product-manager to decide whether this request needs a PRD.
 Use $product-manager to define the scope and acceptance for this release.
 Use $product-manager to split this roadmap only where outputs are independently valuable.
+Use $product-grilling to pressure-test this medium product decision.
+Use $product-roadmap to create an evidence-based Now/Next/Later roadmap.
+Use $product-requirements to approve one requirement baseline, trace delivery automatically, and ask me only for material decisions.
 ```
 
-Skill 会选择一种规划模式，写出解决当前决定所需的最小材料，并在实现可以开始时停止产品讨论。
+入口 Skill 负责产品逻辑，并在需要时把路线图或需求追溯交给对应的伴生 Skill。
+
+实现阶段可以这样检查需求模型。警告会进入报告，不会中断其他工作：
+
+```bash
+python3 skills/product-requirements/scripts/check_requirements_traceability.py \
+  requirements-traceability.json --phase delivery
+```
 
 ## 它能做什么
 
 Product Manager 帮助 Agent：
 
+- 连接客户证据、商业背景、产品战略和目标结果；
 - 找到请求背后的用户结果或业务结果；
+- 在承诺方案前比较客户机会和替代路径；
+- 用依赖感知的决策轮次追问中等和大型需求；
 - 区分必须完成、可以延后和明确不做的范围；
-- 根据真实协作关系选择规划深度；
-- 把验收写成可以观察的结果；
+- 用证据、置信度、风险和机会成本说明优先级；
+- 生成不虚构日期、可供业务方讨论的路线图；
+- 给需求稳定 ID、层级、支撑关系和可观察的验收标准；
+- 按已批准需求审计实现覆盖、阻塞、验证和人工验收；
+- 发布后用真实结果重新审视产品假设；
 - 权限、负责人、来源或发布状态未经确认时保留 `UNKNOWN`；
 - 把架构、编码和任务维护交给对应角色。
 
 它用于解决产品决定，不是一套包办所有工作的项目管理框架。
 
-## 为什么需要这个 Skill
+## 我们在解决什么
 
-编码 Agent 处理产品工作时，常出现两种相反的问题。
+编码 Agent 经常从一句混合了业务目标、功能设想和实现猜测的话直接开工。代码可能已经完成，却没有解决原始问题。项目继续推进后，也很难回答某个模块对应哪项需求、某条支撑性需求为什么存在。
 
-一种是过度规划。一个已经明确的小改动，也可能产生完整 PRD、多级 WBS、风险 Gate、任务卡和多份评审材料。规划成本很快超过改动本身。
+常见的修正方式又会制造审核负担：每个条目都有状态、Gate、人工批准和人工验收。人类花时间审核 Agent 生成的过程记录，却没有把精力留给真正的产品判断。
 
-另一种是提前实现。面对宽泛请求，Agent 还没有确认目标、发布边界和非目标，就开始修改代码。产品决定、架构决定和交付动作随之混在一起，范围不断扩大。
+这套 Skill 保留从业务结果、产品需求到实现证据的责任链。人类只批准一次需求基线。Agent 维护需求层级、支撑关系、模块映射、交付状态、证据和阻塞摘要。只有范围、优先级、风险、成本、用户体验或最终验收需要判断时，工作才回到人类。
 
-这个 Skill 按决定的复杂度增加结构。只有真实产品分歧、独立交付结果或已经确认的风险，才会带来更多规划材料。
+明确的小改动继续直接执行。多模块或跨阶段工作获得足够的追溯能力，但不会多出一套平行项目管理系统。
+
+## 人类需要审核什么
+
+| 时点 | 人类负责 | Agent 负责 |
+|---|---|---|
+| 重要工作开工前 | 批准一次需求基线，决定仍然开放的关键问题 | 查找事实、整理层级和支撑关系，只提出会改变产品承诺的问题 |
+| 实现过程中 | 决定范围或产品含义的变化 | 自动维护模块映射、证据、覆盖情况和阻塞摘要 |
+| 模块或版本验收 | 判断最终业务结果 | 用测试、运行观察和合同核对必须满足的标准 |
+
+支撑性需求默认继承基线和版本验收。只有它引入独立的产品后果时，才需要单独判断。
 
 ## 三种规划模式
 
@@ -53,7 +82,7 @@ Product Manager 帮助 Agent：
 |---|---|---|
 | **Direct** | 一个明确结果、一个修改范围，没有重要产品问题待决定 | 结果、范围、验收、下一动作 |
 | **Coordinated** | 两个以上可独立交付的结果、多个负责人或真实依赖 | 简短产品说明、L1/L2 拆分、真实依赖 |
-| **Controlled** | 公开发布、数据迁移、安全、隐私、权限变化、破坏性操作或写入冲突 | 产品决定，以及必要的控制、复核和回滚 |
+| **Controlled** | 隐私、合规、公开发布、不可逆成本或用户信任后果 | 决策权、产品风险、发布边界和验收证据 |
 
 Controlled 不代表必须拆得更深。一个边界清楚的高风险交付仍然可以是一项任务。
 
@@ -82,23 +111,31 @@ Skill 会选择 **Direct**。范围只包含按钮文案，原有保存行为保
 公开发布这份数据集，并把现有用户数据迁移到新结构。
 ```
 
-公开发布和持久数据迁移改变了发布边界，因此 Skill 会选择 **Controlled**。负责人、回滚和独立复核会进入交付要求，任务拆分仍以真实产物为准。
+公开发布和持久数据迁移改变了产品承诺，因此 Skill 会选择 **Controlled**。它会明确决策权、用户与业务风险、发布边界和放行证据，再把技术控制交给对应流程。
 
 ## 工作方式
 
-1. 阅读已有产品材料、代码、任务状态和历史决定。
-2. 找出会改变结果、范围、验收或发布方式的未决问题。
-3. 只询问能够改变这项决定的信息。
-4. 选择 Direct、Coordinated 或 Controlled。
-5. 给出决定，然后退出产品讨论。
+1. 阅读客户、产品、业务、路线图、交付和历史决定证据。
+2. 明确的小需求直接处理；中等及以上需求存在开放的产品选择时，进入 `product-grilling`。
+3. 按当前决策 frontier 分轮追问，每个问题都附推荐答案和主要取舍。
+4. 需要运行后才能判断时做一次性原型；关键信息掌握在他人手中时生成定向问卷。
+5. 明确目标客户、问题、预期结果、业务价值、约束和一份可审核的需求基线。
+6. 推荐方向并塑造最小有效发布。
+7. 一次性批准基线，把模块落点和接口交给系统架构师。
+8. 把跨会话交付拆成端到端 tracer-bullet 工作包，并记录真实阻塞关系。
+9. 实现期间由 Agent 自动维护需求覆盖、证据和阻塞摘要。
+10. 核对必须满足的结果，请人类完成一次模块或版本验收，再根据上线结果复盘产品假设。
 
-只有产品目标或发布边界发生实质变化时，才重新进入产品规划。
+需求检查器提供 `report`、`align`、`delivery` 和 `acceptance` 四个阶段。结构矛盾始终阻塞；实现阶段的证据缺口通常只警告；正式验收只阻塞必须验证但尚未验证的结果，以及缺少版本级人工决定的情况。
 
 ## 角色边界
 
 | 角色 | 负责内容 |
 |---|---|
 | 产品经理 | 问题、优先级、范围、非目标、发布边界、验收 |
+| 产品追问 | 对中等及以上需求执行依赖感知的追问并形成共同理解 |
+| 产品路线图 | 战略到结果的顺序、时间区间、置信度和路线图反馈 |
+| 产品需求 | 一次批准的基线、需求层级、自动交付追溯、异常反馈和版本级验收 |
 | 系统架构师 | 模块落点、页面占比、文件归属、共享区域、接口 |
 | 开发者 | 在约定边界内完成代码和测试 |
 | 任务系统 | 经授权的跟踪、分配和跨会话交接 |
@@ -115,6 +152,7 @@ Skill 会选择 **Direct**。范围只包含按钮文案，原有保存行为保
 - 需要 PRD、路线图、优先级或版本范围；
 - 多项结果需要分别排期或验收；
 - 风险会改变发布方式；
+- 开工前需要对齐需求，或模块完成后需要核对覆盖与阻塞；
 - 已经有许多任务材料，但仍缺少明确产品决定。
 
 以下工作不需要重新触发产品规划：
@@ -122,7 +160,7 @@ Skill 会选择 **Direct**。范围只包含按钮文案，原有保存行为保
 - 范围明确的编码；
 - 常规缺陷修复；
 - 文档整理；
-- 验收检查；
+- 不需要读取需求基线的独立验收检查；
 - 任务卡维护；
 - 分支或 worktree 生命周期操作。
 
@@ -133,9 +171,23 @@ Skill 会选择 **Direct**。范围只包含按钮文案，原有保存行为保
 skills/product-manager/
   SKILL.md
   agents/openai.yaml
-  references/component-versioning.md
   references/product-sources.md
+skills/product-grilling/
+  SKILL.md
+  agents/openai.yaml
+skills/product-roadmap/
+  SKILL.md
+  agents/openai.yaml
+  references/roadmap-method.md
+skills/product-requirements/
+  SKILL.md
+  agents/openai.yaml
+  assets/requirements-traceability.template.json
+  references/requirements-model.md
+  scripts/check_requirements_traceability.py
 tests/test_package.py
+tests/test_requirements_traceability.py
+THIRD_PARTY_NOTICES.md
 ```
 
 `SKILL.md` 是 Agent 运行时读取的指令。仓库 README 面向评估和安装这个 Skill 的使用者。
@@ -152,6 +204,10 @@ tests/test_package.py
 - [Intercom：保持简单](https://www.intercom.com/blog/intercom-product-principles-keep-it-simple/)
 - [GOV.UK：产品经理职责](https://www.gov.uk/service-manual/the-team/product-manager)
 - [Atlassian：产品需求模板](https://www.atlassian.com/software/confluence/templates/product-requirements)
+- [Atlassian：敏捷产品路线图](https://www.atlassian.com/agile/product-management/roadmaps)
+- [Atlassian：产品发现](https://www.atlassian.com/agile/product-management/discovery)
+- [Product Talk：发现解决方案](https://www.producttalk.org/discovering-solutions/)
+- [Matt Pocock：Skills for Real Engineers](https://github.com/mattpocock/skills)
 
 每项资料怎样转化为具体规则，见 [product-sources.md](skills/product-manager/references/product-sources.md)。
 
@@ -167,10 +223,13 @@ python3 -m unittest discover -s tests -v
 
 ```bash
 python3 <skill-creator>/scripts/quick_validate.py skills/product-manager
+python3 <skill-creator>/scripts/quick_validate.py skills/product-requirements
 python3 <plugin-creator>/scripts/validate_plugin.py .
 ```
 
 除兼容 Agent Skills 的宿主外，这个包没有其他运行依赖。
+
+改编的第三方工作流材料及其许可证见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
 
 ## License
 
