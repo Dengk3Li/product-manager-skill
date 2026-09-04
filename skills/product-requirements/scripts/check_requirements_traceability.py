@@ -14,6 +14,9 @@ DECISION_STATES = {"OPEN", "SETTLED", "DRAFT", "ALIGNED", "APPROVED", "REJECTED"
 DELIVERY_STATES = {"NOT_STARTED", "IN_PROGRESS", "BLOCKED", "IMPLEMENTED"}
 VERIFICATION_STATES = {"NOT_VERIFIED", "PASS", "FAIL"}
 ACCEPTANCE_STATES = {"PENDING", "ACCEPTED", "REJECTED"}
+WORK_PACKAGE_STATES = {"READY", "IN_PROGRESS", "BLOCKED", "DONE", "ACCEPTED"}
+WORK_PACKAGE_DONE_STATES = {"DONE", "ACCEPTED"}
+WORK_PACKAGE_READY_STATES = {"READY"}
 IMPLEMENTATION_EVIDENCE = {"SOURCE_CODE", "TEST_RESULT", "RUNTIME_OBSERVATION", "CONTRACT"}
 VERIFICATION_EVIDENCE = {"TEST_RESULT", "RUNTIME_OBSERVATION", "CONTRACT"}
 
@@ -28,7 +31,7 @@ def load(path: Path) -> dict[str, Any]:
     return payload
 
 
-def validate(payload: dict[str, Any], phase: str) -> tuple[list[str], list[str]]:
+def validate(payload: dict[str, Any], phase: str) -> tuple[list[str], list[str], list[str]]:
     blockers: list[str] = []
     warnings: list[str] = []
     requirements = payload["requirements"]
@@ -104,7 +107,90 @@ def validate(payload: dict[str, Any], phase: str) -> tuple[list[str], list[str]]
     _check_parent_cycles(by_id, blockers)
     _check_support_cycles(by_id, blockers)
     _validate_release_acceptance(payload.get("release_acceptance"), phase, blockers)
-    return blockers, warnings
+    ready = _validate_work_packages(payload.get("work_packages", []), by_id, in_scope, blockers)
+    return blockers, warnings, ready
+
+
+def _validate_work_packages(
+    work_packages: Any,
+    requirements: dict[str, dict[str, Any]],
+    in_scope: set[str],
+    blockers: list[str],
+) -> list[str]:
+    if not isinstance(work_packages, list):
+        blockers.append("work_packages must be an array")
+        return []
+    by_id: dict[str, dict[str, Any]] = {}
+    for item in work_packages:
+        if not isinstance(item, dict):
+            blockers.append("each work package must be an object")
+            continue
+        package_id = item.get("id")
+        if not isinstance(package_id, str) or not package_id:
+            blockers.append("work package requires a non-empty id")
+            continue
+        if package_id in by_id:
+            blockers.append(f"duplicate work package id: {package_id}")
+        by_id[package_id] = item
+
+    for package_id, item in by_id.items():
+        if item.get("status") not in WORK_PACKAGE_STATES:
+            blockers.append(f"{package_id}: invalid work package status")
+        requirement_ids = item.get("requirement_ids")
+        if not isinstance(requirement_ids, list) or not requirement_ids:
+            blockers.append(f"{package_id}: requirement_ids must be a non-empty array")
+        else:
+            for requirement_id in requirement_ids:
+                if requirement_id not in requirements:
+                    blockers.append(f"{package_id}: unknown requirement {requirement_id!r}")
+                elif requirement_id not in in_scope:
+                    blockers.append(
+                        f"{package_id}: requirement {requirement_id!r} is outside the approved baseline"
+                    )
+        depends_on = item.get("depends_on", [])
+        if not isinstance(depends_on, list):
+            blockers.append(f"{package_id}: depends_on must be an array")
+        else:
+            for dependency in depends_on:
+                if dependency not in by_id:
+                    blockers.append(f"{package_id}: unknown work package dependency {dependency!r}")
+        if not item.get("acceptance_criteria"):
+            blockers.append(f"{package_id}: acceptance criteria are missing")
+
+    visiting: set[str] = set()
+    visited: set[str] = set()
+
+    def visit(package_id: str) -> bool:
+        if package_id in visiting:
+            return True
+        if package_id in visited:
+            return False
+        visiting.add(package_id)
+        dependencies = by_id[package_id].get("depends_on", [])
+        if isinstance(dependencies, list):
+            for dependency in dependencies:
+                if dependency in by_id and visit(dependency):
+                    return True
+        visiting.remove(package_id)
+        visited.add(package_id)
+        return False
+
+    for package_id in by_id:
+        if visit(package_id):
+            blockers.append("work package dependencies contain a cycle")
+            return []
+
+    ready: list[str] = []
+    for package_id, item in by_id.items():
+        if item.get("status") not in WORK_PACKAGE_READY_STATES:
+            continue
+        dependencies = item.get("depends_on", [])
+        if isinstance(dependencies, list) and all(
+            by_id.get(dependency, {}).get("status") in WORK_PACKAGE_DONE_STATES
+            for dependency in dependencies
+        ):
+            ready.append(package_id)
+    return sorted(ready)
 
 
 def _validate_baseline(
@@ -216,7 +302,7 @@ def main() -> int:
     args = parser.parse_args()
     try:
         payload = load(args.model)
-        blockers, warnings = validate(payload, args.phase)
+        blockers, warnings, ready = validate(payload, args.phase)
     except ValueError as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 2
@@ -227,6 +313,7 @@ def main() -> int:
         print(f"BLOCK: {blocker}", file=sys.stderr)
 
     requirements = payload["requirements"]
+    work_packages = payload.get("work_packages", [])
     count = lambda field, value: sum(item.get(field) == value for item in requirements)
     accepted = int(payload.get("release_acceptance", {}).get("status") == "ACCEPTED")
     print(
@@ -235,7 +322,9 @@ def main() -> int:
         f"blockers={len(blockers)} warnings={len(warnings)} "
         f"implemented={count('delivery_status', 'IMPLEMENTED')} "
         f"blocked={count('delivery_status', 'BLOCKED')} "
-        f"verified={count('verification_status', 'PASS')} accepted={accepted}"
+        f"verified={count('verification_status', 'PASS')} accepted={accepted} "
+        f"work_packages={len(work_packages) if isinstance(work_packages, list) else 0} "
+        f"ready={','.join(ready) if ready else '-'}"
     )
     return 2 if blockers else 0
 

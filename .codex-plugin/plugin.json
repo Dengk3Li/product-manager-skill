@@ -1,6 +1,6 @@
 {
   "name": "product-manager",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Connect product discovery, business logic, traceable requirements, roadmaps, delivery coverage, and outcome feedback without taking over architecture.",
   "author": {
     "name": "Dengk3Li",
@@ -23,6 +23,7 @@
     "category": "Productivity",
     "capabilities": [
       "Product Shaping",
+      "Product Grilling",
       "Scope and Prioritization",
       "Product Roadmaps",
       "Requirements Traceability"
@@ -30,6 +31,7 @@
     "websiteURL": "https://github.com/Dengk3Li/product-manager-skill",
     "defaultPrompt": [
       "Use $product-manager to connect this customer problem to a business outcome and product decision.",
+      "Use $product-grilling to pressure-test this medium product request and resolve its decision frontier.",
       "Use $product-roadmap to create an evidence-based Now/Next/Later roadmap.",
       "Use $product-requirements to approve one requirement baseline, trace delivery automatically, and escalate only material exceptions."
     ]

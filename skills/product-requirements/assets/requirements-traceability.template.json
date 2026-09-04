@@ -27,5 +27,15 @@
       "blocker": null,
       "evidence": []
     }
+  ],
+  "work_packages": [
+    {
+      "id": "WP-001",
+      "title": "End-to-end deliverable behavior",
+      "requirement_ids": ["BO-001"],
+      "depends_on": [],
+      "status": "READY",
+      "acceptance_criteria": ["Observable delivery criterion"]
+    }
   ]
 }

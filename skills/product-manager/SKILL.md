@@ -25,6 +25,16 @@ When a decision affects module ownership, placement, interfaces, versions, prote
 
 Ask only questions that materially change one of these decisions. Research discoverable facts instead of asking the user to supply them. Reuse current product artifacts and task identity for the same intent.
 
+## Choose the conversation depth
+
+- **Small and settled:** decide and deliver directly. Do not run a grilling session.
+- **Medium:** invoke `product-grilling` for the unresolved decision frontier, then continue the product loop from the decisions it resolves.
+- **Large or foggy:** use repeated `product-grilling` rounds. Route runnable unknowns through a throwaway prototype and knowledge held by another person through a focused questionnaire, then bring the findings back into the same product decision.
+
+Grilling sharpens a decision; it is not a separate approval ceremony. Once the problem, outcome, scope, non-goals, acceptance, and next action are clear, continue to requirements, architecture, or delivery without asking the user to approve the process again.
+
+If `product-grilling` is unavailable, run its compact primitive inline: map the open decisions as a dependency tree, research facts, ask the current frontier with recommended answers and trade-offs, then recompute until the product brief no longer depends on guesses.
+
 ## Evaluate whether a capability needs AI
 
 When a proposal uses an AI model, LLM, agent, embedding model, or semantic inference, compare `NO_AI`, `AI_ASSISTED`, and `AI_CORE` at the product level. Judge whether AI materially improves the user outcome, handles inputs deterministic behavior cannot, and justifies its latency, price, privacy, explainability, uncertainty, and failure experience.
@@ -39,9 +49,11 @@ Record the decision, the best deterministic baseline, the AI-dependent user valu
 
 These specialists return evidence and feedback to the product decision. They do not silently change product priority or scope.
 
+If `system-architect` is unavailable, finish the product decision and return a handoff containing approved requirement IDs, constraints, acceptance, and the unresolved architecture questions. Do not invent module placement or interfaces to compensate for the missing capability.
+
 ## Size the artifact
 
-- **Direct — default:** one clear outcome; return the decision, scope, non-goals, acceptance, and next product action.
+- **Direct — default for small work:** one clear outcome; return the decision, scope, non-goals, acceptance, and next product action.
 - **Coordinated:** multiple independently valuable outcomes, competing priorities, or genuine product dependencies; use one compact brief and L1/L2.
 - **Controlled:** consequential privacy, compliance, public-release, irreversible-cost, or user-trust impact; also state decision authority, product risk, and required acceptance evidence.
 

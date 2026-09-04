@@ -5,7 +5,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SKILL_DIR = ROOT / "skills" / "product-manager"
-EXPECTED_SKILLS = {"product-manager", "product-roadmap", "product-requirements"}
+EXPECTED_SKILLS = {
+    "product-grilling",
+    "product-manager",
+    "product-roadmap",
+    "product-requirements",
+}
 
 
 class PackageTest(unittest.TestCase):
@@ -31,6 +36,8 @@ class PackageTest(unittest.TestCase):
             ROOT / "skills/product-requirements/references/requirements-model.md",
             ROOT / "skills/product-requirements/assets/requirements-traceability.template.json",
             ROOT / "skills/product-requirements/scripts/check_requirements_traceability.py",
+            ROOT / "skills/product-grilling/agents/openai.yaml",
+            ROOT / "THIRD_PARTY_NOTICES.md",
             ROOT / "README.md",
             ROOT / "README.zh-CN.md",
         ]
@@ -52,6 +59,23 @@ class PackageTest(unittest.TestCase):
                 text = path.read_text(errors="ignore")
                 for marker in forbidden:
                     self.assertNotIn(marker, text, f"{marker!r} found in {path}")
+
+    def test_medium_product_work_uses_a_self_contained_grilling_workflow(self):
+        manager = (SKILL_DIR / "SKILL.md").read_text()
+        grilling = (ROOT / "skills/product-grilling/SKILL.md").read_text()
+        self.assertIn("Medium", manager)
+        self.assertIn("product-grilling", manager)
+        self.assertIn("design tree", grilling)
+        self.assertIn("frontier", grilling)
+        self.assertIn("recommended answer", grilling)
+        self.assertIn("If `product-grilling` is unavailable", manager)
+        self.assertIn("If `system-architect` is unavailable", manager)
+
+    def test_requirements_can_detour_through_prototypes_and_slice_delivery_vertically(self):
+        requirements = (ROOT / "skills/product-requirements/SKILL.md").read_text()
+        self.assertIn("prototype", requirements.lower())
+        self.assertIn("tracer-bullet", requirements.lower())
+        self.assertIn("blocking", requirements.lower())
 
 
 if __name__ == "__main__":

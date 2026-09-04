@@ -12,6 +12,7 @@ Install with the open skills CLI:
 
 ```bash
 npx skills add Dengk3Li/product-manager-skill --skill product-manager
+npx skills add Dengk3Li/product-manager-skill --skill product-grilling
 npx skills add Dengk3Li/product-manager-skill --skill product-roadmap
 npx skills add Dengk3Li/product-manager-skill --skill product-requirements
 ```
@@ -22,6 +23,7 @@ Then ask your agent:
 Use $product-manager to decide whether this request needs a PRD.
 Use $product-manager to define the scope and acceptance for this release.
 Use $product-manager to split this roadmap only where outputs are independently valuable.
+Use $product-grilling to pressure-test this medium product decision.
 Use $product-roadmap to create an evidence-based Now/Next/Later roadmap.
 Use $product-requirements to approve one requirement baseline, trace delivery automatically, and ask me only for material decisions.
 ```
@@ -42,6 +44,7 @@ Product Manager helps an agent:
 - connect customer evidence, commercial context, strategy, and product outcomes;
 - identify the user or business outcome behind a request;
 - compare opportunities and alternatives before committing to a solution;
+- grill medium and large requests through dependency-aware decision rounds;
 - separate required scope, optional scope, and explicit non-goals;
 - prioritize with explicit evidence, confidence, risk, and opportunity cost;
 - build stakeholder-readable roadmaps without inventing dates;
@@ -113,12 +116,15 @@ The skill selects **Controlled** because public release and persistent-data migr
 ## How it works
 
 1. Read customer, product, business, roadmap, delivery, and decision evidence.
-2. Frame the target customer, problem, outcome, business value, constraints, and one reviewable baseline.
-3. Compare opportunities and alternatives, then identify the riskiest assumption.
-4. Recommend and shape the smallest useful release.
-5. Approve the baseline once and route architecture placement to the system architect.
-6. Let agents maintain requirement coverage, evidence, and blocker summaries during delivery.
-7. Verify required outcomes, request one module or release decision, and revisit the product hypothesis after release.
+2. Keep settled small work direct; run `product-grilling` for medium and larger requests whose product choices remain open.
+3. Work the current decision frontier in rounds, with a recommendation and main trade-off for each question.
+4. Use a throwaway prototype when a runnable answer is needed, or a questionnaire when the missing knowledge belongs to another person.
+5. Frame the target customer, problem, outcome, business value, constraints, and one reviewable baseline.
+6. Recommend and shape the smallest useful release.
+7. Approve the baseline once and route architecture placement to the system architect.
+8. Break multi-session delivery into end-to-end tracer-bullet packages with explicit blocking relationships.
+9. Let agents maintain requirement coverage, evidence, and blocker summaries during delivery.
+10. Verify required outcomes, request one module or release decision, and revisit the product hypothesis after release.
 
 The requirements checker supports `report`, `align`, `delivery`, and `acceptance` phases. Structural contradictions always block. Delivery evidence gaps normally warn. Acceptance blocks only required outcomes that remain unverified or lack the release-level human decision.
 
@@ -127,6 +133,7 @@ The requirements checker supports `report`, `align`, `delivery`, and `acceptance
 | Role | Owns |
 |---|---|
 | Product manager | Problem, priority, scope, non-goals, release boundary, acceptance |
+| Product grilling | Dependency-aware product questions and shared understanding for medium or larger requests |
 | Product roadmap | Strategy-to-outcome sequencing, horizons, confidence, and roadmap feedback |
 | Product requirements | One approved baseline, requirement hierarchy, automatic delivery traceability, exception reporting, and release-level acceptance |
 | System architect | Module placement, presentation budget, file ownership, shared surfaces, interfaces |
@@ -165,6 +172,9 @@ skills/product-manager/
   SKILL.md
   agents/openai.yaml
   references/product-sources.md
+skills/product-grilling/
+  SKILL.md
+  agents/openai.yaml
 skills/product-roadmap/
   SKILL.md
   agents/openai.yaml
@@ -177,6 +187,7 @@ skills/product-requirements/
   scripts/check_requirements_traceability.py
 tests/test_package.py
 tests/test_requirements_traceability.py
+THIRD_PARTY_NOTICES.md
 ```
 
 `SKILL.md` is the runtime instruction set. The repository README is written for people evaluating or installing the skill.
@@ -196,6 +207,7 @@ The skill adapts ideas from:
 - [Atlassian: Agile roadmaps](https://www.atlassian.com/agile/product-management/roadmaps)
 - [Atlassian: Product discovery](https://www.atlassian.com/agile/product-management/discovery)
 - [Product Talk: Discovering solutions](https://www.producttalk.org/discovering-solutions/)
+- [Matt Pocock: Skills for Real Engineers](https://github.com/mattpocock/skills)
 
 See [product-sources.md](skills/product-manager/references/product-sources.md) for the rule-by-rule adaptation notes.
 
@@ -216,6 +228,8 @@ python3 <plugin-creator>/scripts/validate_plugin.py .
 ```
 
 The package has no runtime dependency beyond a compatible Agent Skills host.
+
+Adapted third-party workflow material and its license are recorded in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 ## License
 

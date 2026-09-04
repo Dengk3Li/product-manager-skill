@@ -19,6 +19,24 @@ Turn product intent into a durable requirement responsibility chain. Let the Age
 
 For a one-line, already-settled change, keep the result direct. Create the structured model when requirements depend on one another, work spans modules or sessions, or later traceability materially matters.
 
+## Resolve unknowns before freezing the baseline
+
+Use conversation for product choices that can be settled in words. When state, interaction, business logic, or a user interface must be experienced to answer the question, commission the smallest throwaway prototype that can produce the missing evidence. Keep the prototype as a cited decision source; production code starts separately from the approved requirement.
+
+When decisive knowledge belongs to another person, produce a focused questionnaire for that gap. Bring the answers back as source material and preserve unanswered items as open decisions.
+
+## Prepare delivery slices
+
+After the baseline is approved, translate it into **tracer-bullet** work packages when delivery spans multiple sessions or independently verifiable outcomes:
+
+- each package completes one narrow end-to-end behavior across the required layers;
+- each package is independently demoable or verifiable;
+- each package fits one fresh implementation context;
+- each package names only the other packages that genuinely block it;
+- the ready set is computed from blocking relationships rather than a numbered sequence.
+
+For a wide mechanical refactor that cannot land as a green vertical slice, use expand-contract: add the new form beside the old, migrate callers in bounded batches, then remove the old form after every blocking migration completes.
+
 ## Maintain the responsibility chain
 
 Use `assets/requirements-traceability.template.json` as the portable model. Select the phase that matches the current decision:

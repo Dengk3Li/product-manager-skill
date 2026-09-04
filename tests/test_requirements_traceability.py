@@ -73,6 +73,24 @@ def valid_model() -> dict:
                 "evidence": [],
             },
         ],
+        "work_packages": [
+            {
+                "id": "WP-001",
+                "title": "Deliver guest checkout",
+                "requirement_ids": ["PR-001"],
+                "depends_on": [],
+                "status": "READY",
+                "acceptance_criteria": ["A guest can place an order"],
+            },
+            {
+                "id": "WP-002",
+                "title": "Measure completion rate",
+                "requirement_ids": ["BO-001"],
+                "depends_on": ["WP-001"],
+                "status": "BLOCKED",
+                "acceptance_criteria": ["Completion rate is visible"],
+            },
+        ],
     }
 
 
@@ -185,6 +203,53 @@ class RequirementsTraceabilityTest(unittest.TestCase):
         result = self.run_checker(payload, "acceptance")
         self.assertEqual(result.returncode, 2)
         self.assertIn("release acceptance requires one human decision", result.stderr)
+
+    def test_work_package_frontier_is_computed_from_dependencies(self) -> None:
+        result = self.run_checker(valid_model(), "delivery")
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("work_packages=2", result.stdout)
+        self.assertIn("ready=WP-001", result.stdout)
+
+    def test_work_package_dependency_cycles_are_blocked(self) -> None:
+        payload = valid_model()
+        payload["work_packages"][0]["depends_on"] = ["WP-002"]
+        result = self.run_checker(payload, "delivery")
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("work package dependencies contain a cycle", result.stderr)
+
+    def test_work_package_requires_a_known_requirement(self) -> None:
+        payload = valid_model()
+        payload["work_packages"][0]["requirement_ids"] = ["PR-MISSING"]
+        result = self.run_checker(payload, "delivery")
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("unknown requirement 'PR-MISSING'", result.stderr)
+
+    def test_work_package_cannot_deliver_requirement_outside_approved_baseline(self) -> None:
+        payload = valid_model()
+        payload["requirements"].append({
+            "id": "PR-OUT",
+            "type": "product_requirement",
+            "title": "Unapproved upsell",
+            "parent_id": "BO-001",
+            "supports": ["BO-001"],
+            "materiality": "SUPPORTING",
+            "decision_required": False,
+            "acceptance_required": False,
+            "delivery_status": "NOT_STARTED",
+            "verification_status": "NOT_VERIFIED",
+            "evidence": [],
+        })
+        payload["work_packages"][0]["requirement_ids"] = ["PR-OUT"]
+        result = self.run_checker(payload, "delivery")
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("outside the approved baseline", result.stderr)
+
+    def test_blocked_work_package_is_not_in_ready_frontier(self) -> None:
+        payload = valid_model()
+        payload["work_packages"][0]["status"] = "BLOCKED"
+        result = self.run_checker(payload, "delivery")
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("ready=-", result.stdout)
 
 
 if __name__ == "__main__":

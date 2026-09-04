@@ -12,6 +12,7 @@
 
 ```bash
 npx skills add Dengk3Li/product-manager-skill --skill product-manager
+npx skills add Dengk3Li/product-manager-skill --skill product-grilling
 npx skills add Dengk3Li/product-manager-skill --skill product-roadmap
 npx skills add Dengk3Li/product-manager-skill --skill product-requirements
 ```
@@ -22,6 +23,7 @@ npx skills add Dengk3Li/product-manager-skill --skill product-requirements
 Use $product-manager to decide whether this request needs a PRD.
 Use $product-manager to define the scope and acceptance for this release.
 Use $product-manager to split this roadmap only where outputs are independently valuable.
+Use $product-grilling to pressure-test this medium product decision.
 Use $product-roadmap to create an evidence-based Now/Next/Later roadmap.
 Use $product-requirements to approve one requirement baseline, trace delivery automatically, and ask me only for material decisions.
 ```
@@ -42,6 +44,7 @@ Product Manager 帮助 Agent：
 - 连接客户证据、商业背景、产品战略和目标结果；
 - 找到请求背后的用户结果或业务结果；
 - 在承诺方案前比较客户机会和替代路径；
+- 用依赖感知的决策轮次追问中等和大型需求；
 - 区分必须完成、可以延后和明确不做的范围；
 - 用证据、置信度、风险和机会成本说明优先级；
 - 生成不虚构日期、可供业务方讨论的路线图；
@@ -113,12 +116,15 @@ Skill 会选择 **Direct**。范围只包含按钮文案，原有保存行为保
 ## 工作方式
 
 1. 阅读客户、产品、业务、路线图、交付和历史决定证据。
-2. 明确目标客户、问题、预期结果、业务价值、约束和一份可审核的需求基线。
-3. 比较客户机会和替代方案，识别最危险的假设。
-4. 推荐方向并塑造最小有效发布。
-5. 一次性批准基线，把模块落点和接口交给系统架构师。
-6. 实现期间由 Agent 自动维护需求覆盖、证据和阻塞摘要。
-7. 核对必须满足的结果，请人类完成一次模块或版本验收，再根据上线结果复盘产品假设。
+2. 明确的小需求直接处理；中等及以上需求存在开放的产品选择时，进入 `product-grilling`。
+3. 按当前决策 frontier 分轮追问，每个问题都附推荐答案和主要取舍。
+4. 需要运行后才能判断时做一次性原型；关键信息掌握在他人手中时生成定向问卷。
+5. 明确目标客户、问题、预期结果、业务价值、约束和一份可审核的需求基线。
+6. 推荐方向并塑造最小有效发布。
+7. 一次性批准基线，把模块落点和接口交给系统架构师。
+8. 把跨会话交付拆成端到端 tracer-bullet 工作包，并记录真实阻塞关系。
+9. 实现期间由 Agent 自动维护需求覆盖、证据和阻塞摘要。
+10. 核对必须满足的结果，请人类完成一次模块或版本验收，再根据上线结果复盘产品假设。
 
 需求检查器提供 `report`、`align`、`delivery` 和 `acceptance` 四个阶段。结构矛盾始终阻塞；实现阶段的证据缺口通常只警告；正式验收只阻塞必须验证但尚未验证的结果，以及缺少版本级人工决定的情况。
 
@@ -127,6 +133,7 @@ Skill 会选择 **Direct**。范围只包含按钮文案，原有保存行为保
 | 角色 | 负责内容 |
 |---|---|
 | 产品经理 | 问题、优先级、范围、非目标、发布边界、验收 |
+| 产品追问 | 对中等及以上需求执行依赖感知的追问并形成共同理解 |
 | 产品路线图 | 战略到结果的顺序、时间区间、置信度和路线图反馈 |
 | 产品需求 | 一次批准的基线、需求层级、自动交付追溯、异常反馈和版本级验收 |
 | 系统架构师 | 模块落点、页面占比、文件归属、共享区域、接口 |
@@ -165,6 +172,9 @@ skills/product-manager/
   SKILL.md
   agents/openai.yaml
   references/product-sources.md
+skills/product-grilling/
+  SKILL.md
+  agents/openai.yaml
 skills/product-roadmap/
   SKILL.md
   agents/openai.yaml
@@ -177,6 +187,7 @@ skills/product-requirements/
   scripts/check_requirements_traceability.py
 tests/test_package.py
 tests/test_requirements_traceability.py
+THIRD_PARTY_NOTICES.md
 ```
 
 `SKILL.md` 是 Agent 运行时读取的指令。仓库 README 面向评估和安装这个 Skill 的使用者。
@@ -196,6 +207,7 @@ tests/test_requirements_traceability.py
 - [Atlassian：敏捷产品路线图](https://www.atlassian.com/agile/product-management/roadmaps)
 - [Atlassian：产品发现](https://www.atlassian.com/agile/product-management/discovery)
 - [Product Talk：发现解决方案](https://www.producttalk.org/discovering-solutions/)
+- [Matt Pocock：Skills for Real Engineers](https://github.com/mattpocock/skills)
 
 每项资料怎样转化为具体规则，见 [product-sources.md](skills/product-manager/references/product-sources.md)。
 
@@ -216,6 +228,8 @@ python3 <plugin-creator>/scripts/validate_plugin.py .
 ```
 
 除兼容 Agent Skills 的宿主外，这个包没有其他运行依赖。
+
+改编的第三方工作流材料及其许可证见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
 
 ## License
 

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Product Grilling"
+  short_description: "Pressure-test medium product decisions through focused rounds"
+  default_prompt: "Use $product-grilling to resolve the current product decision frontier, with a recommendation and main trade-off for each question."
