@@ -4,7 +4,19 @@
 
 [![CI](https://github.com/Dengk3Li/product-manager-skill/actions/workflows/ci.yml/badge.svg)](https://github.com/Dengk3Li/product-manager-skill/actions/workflows/ci.yml)
 
-一组把客户证据和业务目标连接到产品决定、分层需求、路线图、交付覆盖与结果反馈的 Agent Skill；技术架构仍由架构师负责。
+把一个功能想法变成清楚的产品决定：谁会受益、先交付什么、哪些暂时不做、怎样判断有效。四个 Skill 分别处理产品决策、关键追问、路线图和需求追踪。
+
+## 小需求应得到一个简明决定
+
+| 需求 | 应得到的结果 |
+|---|---|
+| “每周导出未解决工单，需要 AI Agent 吗？” | 比较已有筛选导出与 AI 方案，选择能达到目标的最简路径。 |
+| “第一版到底做哪些？” | 必须交付的范围、明确不做的内容和可观察的验收标准。 |
+| “现在能发布吗？” | 将需求与实际证据对应，保留证据缺口和需要人决定的事项。 |
+
+[阅读一份简短的产品决策示例](examples/weekly-export-decision.md) · [v0.3.1 更新记录](CHANGELOG.md)
+
+v0.3.1 更新中英文介绍和示例。四个 Skill 的指令与执行行为和 v0.3.0 保持一致。
 
 ## 快速开始
 
