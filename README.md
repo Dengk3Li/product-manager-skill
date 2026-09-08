@@ -4,7 +4,19 @@ English | [简体中文](README.zh-CN.md)
 
 [![CI](https://github.com/Dengk3Li/product-manager-skill/actions/workflows/ci.yml/badge.svg)](https://github.com/Dengk3Li/product-manager-skill/actions/workflows/ci.yml)
 
-An Agent Skill suite that connects customer evidence and business goals to product decisions, hierarchical requirements, roadmaps, delivery coverage, and outcome feedback without taking over technical architecture.
+Turn a feature request into a clear decision: who benefits, what ships first, what stays out, and how to tell whether it worked. Four focused Skills cover product decisions, difficult questions, roadmaps, and requirements traceability.
+
+## A small request should produce a small decision
+
+| Request | Useful result |
+|---|---|
+| “Export unresolved tickets every week. Do we need an AI agent?” | Compare the existing filter/export route with an AI option; recommend the simplest route that meets the outcome. |
+| “What belongs in the first release?” | Must-have scope, explicit non-goals, and observable acceptance. |
+| “Can we release this?” | Requirements linked to actual evidence, with missing proof and material decisions left visible. |
+
+[Read a short illustrative decision brief](examples/weekly-export-decision.md) · [v0.3.1 update notes](CHANGELOG.md)
+
+v0.3.1 improves the English/Chinese introduction and examples. The four installed Skill definitions and executable behavior are unchanged from v0.3.0.
 
 ## Quick start
 

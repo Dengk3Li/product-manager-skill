@@ -1,6 +1,6 @@
 {
   "name": "product-manager",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Connect product discovery, business logic, traceable requirements, roadmaps, delivery coverage, and outcome feedback without taking over architecture.",
   "author": {
     "name": "Dengk3Li",
