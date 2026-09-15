@@ -16,7 +16,7 @@ Use `parent_id` for decomposition and `supports` for purpose. Tests, architectur
 
 ## One baseline decision
 
-Store the agreed scope in `baseline.requirement_ids`. A single `HUMAN_APPROVAL` evidence item approves that baseline. Child requirements and enablers do not need separate human approvals.
+Store the agreed scope in `baseline.requirement_ids`. A single `HUMAN_APPROVAL` evidence item approves that baseline. An existing explicit user request or decision covering the same concrete requirement scope can supply this evidence; cite the actual source instead of asking again. An AI assumption cannot supply human approval. Child requirements and enablers do not need separate human approvals.
 
 Set `decision_required: true` only when an unresolved choice would change outcome, scope, priority, risk, cost, or user-visible behavior. Set `acceptance_required: true` only for outcomes that must be verified before release. Supporting enablers normally set both fields to `false`.
 

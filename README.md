@@ -56,7 +56,7 @@ Product Manager helps an agent:
 - connect customer evidence, commercial context, strategy, and product outcomes;
 - identify the user or business outcome behind a request;
 - compare opportunities and alternatives before committing to a solution;
-- grill medium and large requests through dependency-aware decision rounds;
+- resolve material open product choices through dependency-aware decision rounds;
 - separate required scope, optional scope, and explicit non-goals;
 - prioritize with explicit evidence, confidence, risk, and opportunity cost;
 - build stakeholder-readable roadmaps without inventing dates;
@@ -128,7 +128,7 @@ The skill selects **Controlled** because public release and persistent-data migr
 ## How it works
 
 1. Read customer, product, business, roadmap, delivery, and decision evidence.
-2. Keep settled small work direct; run `product-grilling` for medium and larger requests whose product choices remain open.
+2. Keep settled work direct regardless of size; run `product-grilling` only for material unresolved product choices.
 3. Work the current decision frontier in rounds, with a recommendation and main trade-off for each question.
 4. Use a throwaway prototype when a runnable answer is needed, or a questionnaire when the missing knowledge belongs to another person.
 5. Frame the target customer, problem, outcome, business value, constraints, and one reviewable baseline.
@@ -145,7 +145,7 @@ The requirements checker supports `report`, `align`, `delivery`, and `acceptance
 | Role | Owns |
 |---|---|
 | Product manager | Problem, priority, scope, non-goals, release boundary, acceptance |
-| Product grilling | Dependency-aware product questions and shared understanding for medium or larger requests |
+| Product grilling | Dependency-aware questions for material unresolved product choices |
 | Product roadmap | Strategy-to-outcome sequencing, horizons, confidence, and roadmap feedback |
 | Product requirements | One approved baseline, requirement hierarchy, automatic delivery traceability, exception reporting, and release-level acceptance |
 | System architect | Module placement, presentation budget, file ownership, shared surfaces, interfaces |

@@ -15,7 +15,7 @@ When a decision affects module ownership, placement, interfaces, versions, prote
 
 ## Product loop
 
-1. **Understand:** read available user research, usage data, commercial context, strategy, roadmap, delivery state, and prior decisions. Keep missing or stale evidence explicit.
+1. **Understand:** read only user, business, product and prior-decision evidence that affects this request. Keep relevant missing or stale evidence explicit.
 2. **Frame:** state the target customer, problem, current behavior, desired outcome, business value, constraints, and baseline.
 3. **Explore:** distinguish customer opportunities from proposed solutions. Compare credible alternatives and identify the assumption most likely to invalidate the choice.
 4. **Decide:** recommend a direction using impact, evidence strength, confidence, cost, risk, and opportunity cost. Do not hide a decisive trade-off behind an aggregate score.
@@ -28,8 +28,8 @@ Ask only questions that materially change one of these decisions. Research disco
 ## Choose the conversation depth
 
 - **Small and settled:** decide and deliver directly. Do not run a grilling session.
-- **Medium:** invoke `product-grilling` for the unresolved decision frontier, then continue the product loop from the decisions it resolves.
-- **Large or foggy:** use repeated `product-grilling` rounds. Route runnable unknowns through a throwaway prototype and knowledge held by another person through a focused questionnaire, then bring the findings back into the same product decision.
+- **Material unresolved choices:** use `product-grilling` only for decisions that change the outcome, scope, priority, cost or acceptance. Size alone does not trigger an interview; settled medium work proceeds directly.
+- **Large or foggy with material unresolved choices:** use bounded `product-grilling` rounds. Route runnable unknowns through a throwaway prototype and knowledge held by another person through a focused questionnaire, then bring the findings back into the same product decision.
 
 Grilling sharpens a decision; it is not a separate approval ceremony. Once the problem, outcome, scope, non-goals, acceptance, and next action are clear, continue to requirements, architecture, or delivery without asking the user to approve the process again.
 
@@ -49,7 +49,7 @@ Record the decision, the best deterministic baseline, the AI-dependent user valu
 
 These specialists return evidence and feedback to the product decision. They do not silently change product priority or scope.
 
-If `system-architect` is unavailable, finish the product decision and return a handoff containing approved requirement IDs, constraints, acceptance, and the unresolved architecture questions. Do not invent module placement or interfaces to compensate for the missing capability.
+Roles describe responsibilities, not mandatory separate agents or handoffs. The same agent can continue product, architecture and implementation work within the authorized scope. If a specialist skill is unavailable, use repository evidence and appropriate technical judgment; pause only for missing material knowledge or authority, not the missing skill itself.
 
 ## Size the artifact
 

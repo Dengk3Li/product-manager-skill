@@ -60,16 +60,14 @@ class PackageTest(unittest.TestCase):
                 for marker in forbidden:
                     self.assertNotIn(marker, text, f"{marker!r} found in {path}")
 
-    def test_medium_product_work_uses_a_self_contained_grilling_workflow(self):
+    def test_product_grilling_workflow_remains_self_contained(self):
         manager = (SKILL_DIR / "SKILL.md").read_text()
         grilling = (ROOT / "skills/product-grilling/SKILL.md").read_text()
-        self.assertIn("Medium", manager)
         self.assertIn("product-grilling", manager)
         self.assertIn("design tree", grilling)
         self.assertIn("frontier", grilling)
         self.assertIn("recommended answer", grilling)
         self.assertIn("If `product-grilling` is unavailable", manager)
-        self.assertIn("If `system-architect` is unavailable", manager)
 
     def test_requirements_can_detour_through_prototypes_and_slice_delivery_vertically(self):
         requirements = (ROOT / "skills/product-requirements/SKILL.md").read_text()
