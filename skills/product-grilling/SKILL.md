@@ -1,6 +1,6 @@
 ---
 name: product-grilling
-description: Pressure-test a medium or larger product request through dependency-aware decision rounds. Use when product intent, scope, alternatives, acceptance, or release choices remain open; skip settled small work.
+description: Resolve material open product choices through focused questions and evidence. Use when scope, outcome, priority or acceptance cannot be settled from existing context; skip settled work regardless of size.
 ---
 
 # Product Grilling
@@ -9,7 +9,7 @@ Reach shared understanding before shaping the product commitment. Treat the disc
 
 ## Work the decision frontier
 
-1. Read product, customer, business, delivery, code, and prior-decision evidence first.
+1. Read the available evidence that can resolve the current material decision. Do not read every category or reopen settled choices.
 2. Separate discoverable facts from choices. Research facts directly; ask the user only for decisions that change the outcome, scope, priority, acceptance, or release boundary.
 3. Compute the current **frontier**: every unresolved decision whose prerequisites are already settled.
 4. Ask one compact round covering that frontier. Number the questions and attach a recommended answer with its main trade-off to each.

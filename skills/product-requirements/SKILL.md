@@ -9,12 +9,12 @@ Turn product intent into a durable requirement responsibility chain. Let the Age
 
 ## Align before work starts
 
-1. Read primary customer, business, policy, product, and existing-system evidence. Mark unverified claims `UNKNOWN`.
+1. Read the primary evidence needed for the current requirement decision; do not load every evidence category. Keep consequential unverified claims explicit.
 2. Separate business outcomes, user needs, product requirements, enablers, constraints, and acceptance criteria. Read [references/requirements-model.md](references/requirements-model.md) for the model and hierarchy rules.
 3. Give every requirement a stable ID. Use `parent_id` for decomposition and `supports` for the reason a supporting requirement exists.
 4. Resolve discoverable facts from evidence. Ask the human only about unresolved goals, scope, priority, risk tolerance, or acceptance judgments that change the product commitment.
 5. Keep architecture placement out of the PRD. Send approved requirement IDs and constraints to `system-architect`; accept module and interface references back without rewriting product intent.
-6. Ask the human to approve the baseline once. That decision covers the listed requirement IDs; do not request separate approval for each child requirement or enabler.
+6. Reuse an explicit user instruction or existing decision that already approves the same concrete scope and acceptance. Cite that source when recording baseline approval. Ask once only for a new or materially changed product commitment; never infer approval from an AI proposal or approve children separately.
 7. Record baseline approval separately from delivery, verification, and release acceptance. Implementation authority follows the user's task and workspace rules.
 
 For a one-line, already-settled change, keep the result direct. Create the structured model when requirements depend on one another, work spans modules or sessions, or later traceability materially matters.
